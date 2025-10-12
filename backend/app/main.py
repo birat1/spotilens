@@ -11,3 +11,8 @@ app.add_middleware(SessionMiddleware, secret_key=secrets.token_urlsafe(64))
 
 app.include_router(auth.router, prefix="/auth")
 app.include_router(stats.router)
+
+@app.get("/")
+def read_root():
+    return {"message": "Please authenticate via /auth/login"}
+
