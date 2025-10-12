@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 import spotipy
-from typing import Literal
+from typing import Counter, Dict, List, Literal
+from datetime import datetime
 from ..dependencies import get_spotify_client
 
 router = APIRouter()
@@ -53,3 +54,32 @@ def get_current_track(sp: spotipy.Spotify = Depends(get_spotify_client)):
         return JSONResponse({"error": "Could not fetch currently playing track"})
 
     return JSONResponse(currently_playing)
+
+# Need to rework on this
+""" @router.get("/me/stats")
+def get_stats(sp: spotipy.Spotify = Depends(get_spotify_client)):
+    top_artists = sp.current_user_top_artists(limit=50, time_range="short_term")
+
+    genres = []
+    for artist in top_artists['items']:
+        genres.extend(artist['genres'])
+    top_genres = Counter(genres).most_common(10)
+
+    recently_played = sp.current_user_recently_played(limit=50)
+    hour_counter = Counter()
+
+    for item in recently_played['items']:
+        played_at = datetime.fromisoformat(item['played_at'].replace('Z', '+00:00'))
+        hour_counter[played_at.hour] += 1
+
+    listening_hours: List[Dict[str, int]] = [
+        {"hour": h, "play_count": count} for h, count in sorted(hour_counter.items())
+    ]
+
+    most_active_hour = hour_counter.most_common(1)[0][0] if hour_counter else None
+
+    return JSONResponse({
+        "top_genres": [{"genre": g, "count": c} for g, c in top_genres],
+        "listening_hours": listening_hours,
+        "most_active_hour": most_active_hour,
+    }) """
