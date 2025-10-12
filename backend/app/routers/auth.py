@@ -27,12 +27,16 @@ def callback(request: Request):
 
     token_info = sp_oauth.auth_manager.get_access_token(code)
     sp = spotipy.Spotify(auth=token_info['access_token'])
-    user_data = sp.current_user()
 
     request.session['token_info'] = token_info
-    request.session['user_data'] = user_data
 
     # print(token_info)
     # return JSONResponse(user_data)
 
     return RedirectResponse(url="/me/profile")
+
+@router.get("/logout")
+def logout(request: Request):
+    request.session.clear()
+
+    return RedirectResponse(url="/")
