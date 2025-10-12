@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse
 import spotipy
 from ..dependencies import get_spotify_client
 
@@ -20,3 +20,35 @@ def get_top_tracks(sp: spotipy.Spotify = Depends(get_spotify_client), limit: int
         return JSONResponse({"error": "Could not fetch top tracks"})
 
     return JSONResponse(top_tracks)
+
+@router.get("/me/top/artists")
+def get_top_artists(sp: spotipy.Spotify = Depends(get_spotify_client), limit: int = 10, time_range: str = "short_term"):
+    top_artists = sp.current_user_top_artists(limit=limit, time_range=time_range)
+    if not top_artists:
+        return JSONResponse({"error": "Could not fetch top artists"})
+
+    return JSONResponse(top_artists)
+
+@router.get("/me/recently-played")
+def get_recently_played(sp: spotipy.Spotify = Depends(get_spotify_client), limit: int = 10):
+    recently_played = sp.current_user_recently_played(limit=limit)
+    if not recently_played:
+        return JSONResponse({"error": "Could not fetch recently played tracks"})
+
+    return JSONResponse(recently_played)
+
+@router.get("/me/player")
+def get_current_playback(sp: spotipy.Spotify = Depends(get_spotify_client)):
+    current_playback = sp.current_playback()
+    if not current_playback:
+        return JSONResponse({"error": "Could not fetch current playback"})
+
+    return JSONResponse(current_playback)
+
+@router.get("/me/player/currently-playing")
+def get_current_track(sp: spotipy.Spotify = Depends(get_spotify_client)):
+    currently_playing = sp.currently_playing()
+    if not currently_playing:
+        return JSONResponse({"error": "Could not fetch currently playing track"})
+
+    return JSONResponse(currently_playing)

@@ -10,16 +10,16 @@ sp_oauth = spotipy.Spotify(auth_manager=SpotifyOAuth(
     client_id=settings.CLIENT_ID,
     client_secret=settings.CLIENT_SECRET,
     redirect_uri=settings.REDIRECT_URI,
-    scope="user-library-read"
+    scope=settings.SCOPE,
 ))
 
 router = APIRouter()
-@router.get("/login")
+@router.get("/auth/login")
 def login():
     auth_url = sp_oauth.auth_manager.get_authorize_url()
     return RedirectResponse(auth_url)
 
-@router.get("/callback")
+@router.get("/auth/callback")
 def callback(request: Request):
     code = request.query_params.get('code')
     if not code:
@@ -31,9 +31,9 @@ def callback(request: Request):
     # print(token_info)
     # return JSONResponse(user_data)
 
-    return RedirectResponse(url="/me/profile")
+    return RedirectResponse(url="/api/me/profile")
 
-@router.get("/logout")
+@router.get("/auth/logout")
 def logout(request: Request):
     request.session.clear()
 
