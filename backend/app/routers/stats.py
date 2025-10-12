@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 import spotipy
+from typing import Literal
 from ..dependencies import get_spotify_client
 
 router = APIRouter()
@@ -14,7 +15,7 @@ def get_profile(sp: spotipy.Spotify = Depends(get_spotify_client)):
     return JSONResponse(user_data)
 
 @router.get("/me/top/tracks")
-def get_top_tracks(sp: spotipy.Spotify = Depends(get_spotify_client), limit: int = 10, time_range: str = "short_term"):
+def get_top_tracks(sp: spotipy.Spotify = Depends(get_spotify_client), limit: int = 10, time_range: Literal["short_term", "medium_term", "long_term"] = "short_term"):
     top_tracks = sp.current_user_top_tracks(limit=limit, time_range=time_range)
     if not top_tracks:
         return JSONResponse({"error": "Could not fetch top tracks"})
@@ -22,7 +23,7 @@ def get_top_tracks(sp: spotipy.Spotify = Depends(get_spotify_client), limit: int
     return JSONResponse(top_tracks)
 
 @router.get("/me/top/artists")
-def get_top_artists(sp: spotipy.Spotify = Depends(get_spotify_client), limit: int = 10, time_range: str = "short_term"):
+def get_top_artists(sp: spotipy.Spotify = Depends(get_spotify_client), limit: int = 10, time_range: Literal["short_term", "medium_term", "long_term"] = "short_term"):
     top_artists = sp.current_user_top_artists(limit=limit, time_range=time_range)
     if not top_artists:
         return JSONResponse({"error": "Could not fetch top artists"})
