@@ -22,7 +22,17 @@ def login():
 @router.get("/callback")
 def callback(request: Request):
     code = request.query_params.get('code')
+    if not code:
+        return JSONResponse({"error": "Authorization code not found"})
+
     token_info = sp_oauth.auth_manager.get_access_token(code)
     sp = spotipy.Spotify(auth=token_info['access_token'])
     user_data = sp.current_user()
-    return JSONResponse(user_data)
+
+    request.session['token_info'] = token_info
+    request.session['user_data'] = user_data
+
+    # print(token_info)
+    # return JSONResponse(user_data)
+
+    return RedirectResponse(url="/me/profile")
