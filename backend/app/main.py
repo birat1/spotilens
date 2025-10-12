@@ -15,4 +15,3 @@ app.include_router(stats.router)
 @app.get("/")
 def read_root():
     return {"message": "Please authenticate via /auth/login"}
-

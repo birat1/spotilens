@@ -26,8 +26,6 @@ def callback(request: Request):
         return JSONResponse({"error": "Authorization code not found"})
 
     token_info = sp_oauth.auth_manager.get_access_token(code)
-    sp = spotipy.Spotify(auth=token_info['access_token'])
-
     request.session['token_info'] = token_info
 
     # print(token_info)
