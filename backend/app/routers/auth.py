@@ -31,7 +31,7 @@ def callback(request: Request) -> RedirectResponse:
     token_info = sp_oauth.auth_manager.get_access_token(code)
     request.session["token_info"] = token_info
 
-    return RedirectResponse(url="/api/me/profile")
+    return RedirectResponse(url="/")
 
 @router.get("/auth/logout")
 def logout(request: Request) -> RedirectResponse:

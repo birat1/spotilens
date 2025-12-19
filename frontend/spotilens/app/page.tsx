@@ -1,12 +1,52 @@
-'use client'
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { login } from "@/services/auth";
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/auth-context';
+import { login } from '@/services/auth';
 
 export default function Home() {
+  const { user, loading } = useAuth();
+
+  if (loading)
+    return (
+      <div className="flex flex-1 items-center justify-center">Loading...</div>
+    );
+
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <Button onClick={login}>Login with Spotify</Button>
+    <div className="flex flex-1 flex-col items-center justify-center gap-6 min-h-0">
+      {user ? (
+        // Logged in state
+        <div className="flex flex-row items-center gap-6">
+          {user.images?.[0]?.url && (
+            <Image
+              src={user.images[0].url}
+              alt={user.display_name}
+              width={200}
+              height={200}
+              unoptimized
+              priority
+              className="aspect-square rounded-full object-cover shadow-2xl"
+            />
+          )}
+
+          <div className="flex flex-col items-start">
+            <span className="text-sm font-medium text-muted-foreground">
+              Welcome,
+            </span>
+            <h1 className="text-5xl font-extrabold tracking-tight">
+              {user.display_name}
+            </h1>
+          </div>
+        </div>
+      ) : (
+        // Logged out state
+        <Button onClick={login} className="bg-green-600 hover:bg-green-700">
+          Login with Spotify
+        </Button>
+      )}
     </div>
   );
 }
