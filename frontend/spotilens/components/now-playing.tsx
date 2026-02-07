@@ -53,7 +53,7 @@ export function NowPlaying() {
             width={160}
             height={160}
             unoptimized
-            className="rounded-lg shadow-md"
+            className="rounded-md shadow-md"
           />
         </a>
 
@@ -63,7 +63,7 @@ export function NowPlaying() {
             <a
               href={playback.item.external_urls.spotify}
               target="_blank"
-              className="text-lg font-bold hover:underline underline-offset-2"
+              className="text-lg font-bold hover:text-primary underline-offset-2"
             >
               {playback.item.name}
             </a>
@@ -76,7 +76,7 @@ export function NowPlaying() {
                   <a
                     href={artist.external_urls.spotify}
                     target="_blank"
-                    className="hover:underline underline-offset-2"
+                    className="hover:text-primary underline-offset-2"
                   >
                     {artist.name}
                   </a>
