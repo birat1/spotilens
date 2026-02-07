@@ -1,43 +1,34 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 
 import { useAuth } from '@/context/auth-context';
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export default function TopArtists() {
   const { user, loading: authLoading } = useAuth();
-  const [artists, setArtists] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('short_term');
 
-  useEffect(() => {
-    const fetchTopArtists = async () => {
-      try {
-        const res = await fetch(
-          `/me/top/artists?time_range=${timeRange}&limit=50`
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setArtists(data.items || []);
-        }
-      } catch (err) {
-        console.error('Failed to fetch top artists:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (!authLoading && user) {
-      fetchTopArtists();
+  const { data, error, isValidating } = useSWR(
+    user ? `/me/top/artists?time_range=${timeRange}&limit=50` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false, // Don't refetch on window focus
+      dedupingInterval: 300000, // 5 minutes
     }
-  }, [authLoading, user, timeRange]);
+  );
 
-  if (authLoading || loading) {
+  const artists = data?.items || [];
+  const isLoading = !data && !error;
+
+  if (authLoading) {
     return (
       <div className="flex flex-1 items-center justify-center">
         <div className="text-muted-foreground animate-pulse font-medium">
-          Loading top artists...
+          Authenticating...
         </div>
       </div>
     );
@@ -72,51 +63,64 @@ export default function TopArtists() {
           </div>
         </header>
 
-        {/* Artist List */}
-        <div className="grid grid-cols-1 gap-4">
-          {artists.map((artist, index) => (
-            <div
-              key={artist.id}
-              className="flex items-center gap-6 bg-card border border-border p-4 rounded-xl shadow-sm hover:shadow-md transition-all group"
-            >
-              {/* Rank Badge */}
-              <div className="text-2xl font-black text-muted-foreground/30 min-w-[3rem] text-center">
-                {index + 1}
-              </div>
-
-              {/* Artist Image */}
-              <div className="relative h-26 w-26 flex-shrink-0 overflow-hidden rounded-lg shadow-md">
-                {artist.images?.[0]?.url && (
-                  <Image
-                    src={artist.images[0].url}
-                    alt={artist.name}
-                    fill
-                    unoptimized
-                    className="object-cover duration-500 hover:scale-110"
-                  />
-                )}
-              </div>
-
-              {/* Artist Info */}
-              <div className="flex flex-col min-w-0">
-                {/* Artist Name */}
-                <a
-                  href={artist.external_urls.spotify}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-bold text-2xl text-foreground truncate hover:text-primary transition-colors"
-                >
-                  {artist.name}
-                </a>
-
-                {/* Artist Genre */}
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest truncate">
-                  {artist.genres?.[0] || 'Artist'}
-                </p>
-              </div>
+        {isLoading ? (
+          <div className="flex flex-1 items-center justify-center py-20">
+            <div className="text-muted-foreground animate-pulse">
+              Loading top artists...
             </div>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">
+            {isValidating && !isLoading && (
+              <div className="absolute top-4 right-8 text-[10px] text-primary animate-pulse uppercase font-bold">
+                Loading...
+              </div>
+            )}
+
+            {artists.map((artist: any, index: number) => (
+              <div
+                key={artist.id}
+                className="flex items-center gap-6 bg-card border border-border p-4 rounded-xl shadow-sm hover:shadow-md transition-all group"
+              >
+                {/* Rank */}
+                <div className="text-2xl font-black text-muted-foreground/30 min-w-[3rem] text-center">
+                  {index + 1}
+                </div>
+
+                {/* Artist Image */}
+                <div className="relative h-26 w-26 flex-shrink-0 overflow-hidden rounded-md shadow-md">
+                  {artist.images?.[0]?.url && (
+                    <Image
+                      src={artist.images[0].url}
+                      alt={artist.name}
+                      fill
+                      unoptimized
+                      className="object-cover duration-500 hover:scale-110"
+                    />
+                  )}
+                </div>
+
+                {/* Artist Info */}
+                <div className="flex flex-col min-w-0">
+                  {/* Artist Name */}
+                  <a
+                    href={artist.external_urls.spotify}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-2xl text-foreground truncate hover:text-primary transition-colors"
+                  >
+                    {artist.name}
+                  </a>
+
+                  {/* Artist Genre */}
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest truncate">
+                    {artist.genres?.[0]}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

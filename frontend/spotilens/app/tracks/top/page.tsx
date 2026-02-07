@@ -1,43 +1,34 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 
 import { useAuth } from '@/context/auth-context';
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export default function TopTracks() {
   const { user, loading: authLoading } = useAuth();
-  const [tracks, setTracks] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('short_term');
 
-  useEffect(() => {
-    const fetchTopTracks = async () => {
-      try {
-        const res = await fetch(
-          `/me/top/tracks?time_range=${timeRange}&limit=50`
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setTracks(data.items || []);
-        }
-      } catch (err) {
-        console.error('Failed to fetch top tracks:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (!authLoading && user) {
-      fetchTopTracks();
+  const { data, error, isValidating } = useSWR(
+    user ? `/me/top/tracks?time_range=${timeRange}&limit=50` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false, // Don't refetch on window focus
+      dedupingInterval: 300000, // 5 minutes
     }
-  }, [authLoading, user, timeRange]);
+  );
 
-  if (authLoading || loading) {
+  const tracks = data?.items || [];
+  const isLoading = !data && !error;
+
+  if (authLoading) {
     return (
       <div className="flex flex-1 items-center justify-center">
         <div className="text-muted-foreground animate-pulse font-medium">
-          Loading top tracks...
+          Authenticating...
         </div>
       </div>
     );
@@ -53,7 +44,7 @@ export default function TopTracks() {
               Top Tracks
             </h1>
             <p className="text-muted-foreground text-xs">
-              Based on your recent listening habits
+              Your most played tracks
             </p>
           </div>
 
@@ -72,73 +63,86 @@ export default function TopTracks() {
           </div>
         </header>
 
-        {/* Track List */}
-        <div className="grid grid-cols-1 gap-4">
-          {tracks.map((track, index) => (
-            <div
-              key={track.id}
-              className="flex items-center gap-6 bg-card border border-border p-4 rounded-xl shadow-sm hover:shadow-md transition-all group"
-            >
-              {/* Rank Badge */}
-              <div className="text-2xl font-black text-muted-foreground/30 min-w-[3rem] text-center">
-                {index + 1}
+        {isLoading ? (
+          <div className="flex flex-1 items-center justify-center py-20">
+            <div className="text-muted-foreground animate-pulse">
+              Loading top tracks...
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">
+            {isValidating && !isLoading && (
+              <div className="absolute top-4 right-8 text-[10px] text-primary animate-pulse uppercase font-bold">
+                Loading...
               </div>
+            )}
 
-              {/* Album Image */}
-              <div className="relative h-26 w-26 flex-shrink-0 overflow-hidden rounded-lg shadow-md">
-                {track.album.images?.[0]?.url && (
-                  <Image
-                    src={track.album.images[0].url}
-                    alt={track.name}
-                    fill
-                    unoptimized
-                    className="object-cover duration-500 hover:scale-110"
-                  />
-                )}
-              </div>
-
-              {/* Track Info */}
-              <div className="flex flex-col min-w-0">
-                {/* Track Name */}
-                <a
-                  href={track.external_urls.spotify}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-bold text-lg text-foreground truncate hover:text-primary transition-colors"
-                >
-                  {track.name}
-                </a>
-
-                {/* Track Artist(s) */}
-                <div className="text-xs font-semibold text-muted-foreground truncate flex gap-1">
-                  {track.artists?.map((artist: any, index: number) => (
-                    <span key={artist.id}>
-                      <a
-                        href={artist.external_urls.spotify}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-primary transition-colors"
-                      >
-                        {artist.name}
-                      </a>
-                      {index < track.artists.length - 1 && ','}
-                    </span>
-                  ))}
+            {tracks.map((track: any, index: number) => (
+              <div
+                key={track.id}
+                className="flex items-center gap-6 bg-card border border-border p-4 rounded-xl shadow-sm hover:shadow-md transition-all group"
+              >
+                {/* Rank */}
+                <div className="text-2xl font-black text-muted-foreground/30 min-w-[3rem] text-center">
+                  {index + 1}
                 </div>
 
-                {/* Album Name */}
-                <a
-                  href={track.album.external_urls.spotify}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-muted-foreground/80 truncate hover:text-primary transition-colors mt-2"
-                >
-                  {track.album.name}
-                </a>
+                {/* Album Image */}
+                <div className="relative h-26 w-26 flex-shrink-0 overflow-hidden rounded-md shadow-md">
+                  {track.album.images?.[0]?.url && (
+                    <Image
+                      src={track.album.images[0].url}
+                      alt={track.name}
+                      fill
+                      unoptimized
+                      className="object-cover duration-500 hover:scale-110"
+                    />
+                  )}
+                </div>
+
+                {/* Track Info */}
+                <div className="flex flex-col min-w-0">
+                  {/* Track Name */}
+                  <a
+                    href={track.external_urls.spotify}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-lg text-foreground truncate hover:text-primary transition-colors"
+                  >
+                    {track.name}
+                  </a>
+
+                  {/* Track Artist(s) */}
+                  <div className="text-xs font-semibold text-muted-foreground truncate flex gap-1">
+                    {track.artists?.map((artist: any, index: number) => (
+                      <span key={artist.id}>
+                        <a
+                          href={artist.external_urls.spotify}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-primary transition-colors"
+                        >
+                          {artist.name}
+                        </a>
+                        {index < track.artists.length - 1 && ','}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Album Name */}
+                  <a
+                    href={track.album.external_urls.spotify}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-muted-foreground/80 truncate hover:text-primary transition-colors mt-2"
+                  >
+                    {track.album.name}
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
