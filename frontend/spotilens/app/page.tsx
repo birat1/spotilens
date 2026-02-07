@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 
+import { NowPlaying } from '@/components/now-playing';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/auth-context';
 import { login } from '@/services/auth';
@@ -16,31 +16,34 @@ export default function Home() {
     );
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-6 min-h-0">
+    <div className="flex flex-1 flex-col items-center justify-start gap-6 min-h-0 pt-[5vh]">
       {user ? (
-        // Logged in state
-        <div className="flex flex-row items-center gap-6">
-          {user.images?.[0]?.url && (
-            <Image
-              src={user.images[0].url}
-              alt={user.display_name}
-              width={200}
-              height={200}
-              unoptimized
-              priority
-              className="aspect-square rounded-full object-cover shadow-2xl"
-            />
-          )}
+        <>
+          <div className="flex flex-row items-center gap-6">
+            {user.images?.[0]?.url && (
+              <Image
+                src={user.images[0].url}
+                alt={user.display_name}
+                width={200}
+                height={200}
+                unoptimized
+                priority
+                className="aspect-square rounded-full object-cover shadow-2xl"
+              />
+            )}
 
-          <div className="flex flex-col items-start">
-            <span className="text-sm font-medium text-muted-foreground">
-              Welcome,
-            </span>
-            <h1 className="text-5xl font-extrabold tracking-tight">
-              {user.display_name}
-            </h1>
+            <div className="flex flex-col items-start">
+              <span className="text-sm font-medium text-muted-foreground">
+                Welcome,
+              </span>
+              <h1 className="text-5xl font-extrabold tracking-tight">
+                {user.display_name}
+              </h1>
+            </div>
           </div>
-        </div>
+
+          <NowPlaying />
+        </>
       ) : (
         // Logged out state
         <Button onClick={login} className="bg-green-600 hover:bg-green-700">
