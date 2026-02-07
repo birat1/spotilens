@@ -6,13 +6,14 @@ import useSWR from 'swr';
 
 import { useAuth } from '@/context/auth-context';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function RecentTracks() {
   const { user, loading: authLoading } = useAuth();
 
   const { data, error, isValidating } = useSWR(
-    user ? `/me/recently-played?limit=50` : null,
+    user ? `${BACKEND_URL}/me/recently-played?limit=50` : null,
     fetcher,
     {
       revalidateOnFocus: false, // Don't refetch on window focus

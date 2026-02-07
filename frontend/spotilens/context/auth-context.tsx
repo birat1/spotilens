@@ -24,6 +24,8 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
 });
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    fetch('/me/profile')
+    fetch(`${BACKEND_URL}/me/profile`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         setUser(data);

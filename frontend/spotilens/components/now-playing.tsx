@@ -4,13 +4,15 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { MarqueeWrapper } from '@/components/utils/MarqueeWrapper';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export function NowPlaying() {
   const [playback, setPlayback] = useState<any>(null);
 
   // Fetch currently playing track
   const fetchCurrentTrack = useCallback(async () => {
     try {
-      const res = await fetch('/me/player/currently-playing');
+      const res = await fetch(`${BACKEND_URL}/me/player/currently-playing`);
       if (res.ok) {
         const data = await res.json();
         if (data && data.item) {

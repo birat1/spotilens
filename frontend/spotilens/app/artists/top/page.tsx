@@ -7,6 +7,7 @@ import useSWR from 'swr';
 
 import { useAuth } from '@/context/auth-context';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function TopArtists() {
@@ -14,7 +15,9 @@ export default function TopArtists() {
   const [timeRange, setTimeRange] = useState('short_term');
 
   const { data, error, isValidating } = useSWR(
-    user ? `/me/top/artists?time_range=${timeRange}&limit=50` : null,
+    user
+      ? `${BACKEND_URL}/me/top/artists?time_range=${timeRange}&limit=50`
+      : null,
     fetcher,
     {
       revalidateOnFocus: false, // Don't refetch on window focus
