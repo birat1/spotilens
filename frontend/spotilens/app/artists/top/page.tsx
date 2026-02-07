@@ -99,6 +99,7 @@ export default function TopArtists() {
 
               {/* Artist Info */}
               <div className="flex flex-col min-w-0">
+                {/* Artist Name */}
                 <a
                   href={artist.external_urls.spotify}
                   target="_blank"
@@ -107,6 +108,8 @@ export default function TopArtists() {
                 >
                   {artist.name}
                 </a>
+
+                {/* Artist Genre */}
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest truncate">
                   {artist.genres?.[0] || 'Artist'}
                 </p>
