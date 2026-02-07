@@ -1,18 +1,19 @@
-import secrets
-
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 load_dotenv()
+from app.config import get_settings  # noqa: E402
 from app.routers import auth, stats  # noqa: E402
 
+settings = get_settings()
+
 app = FastAPI()
-app.add_middleware(SessionMiddleware, secret_key=secrets.token_urlsafe(64))
+app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

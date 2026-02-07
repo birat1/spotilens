@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     CLIENT_SECRET: str
     REDIRECT_URI: str
     SCOPE: str
+    SESSION_SECRET: str
+    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000"]
 
     model_config = SettingsConfigDict(env_file="../.env")
 
