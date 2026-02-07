@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 
-import { MarqueeWrapper } from '@/lib/MarqueeWrapper';
+import { MarqueeWrapper } from '@/components/utils/MarqueeWrapper';
 
 export function NowPlaying() {
   const [playback, setPlayback] = useState<any>(null);

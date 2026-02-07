@@ -1,4 +1,3 @@
-import { request } from 'http';
 import { useEffect, useRef, useState } from 'react';
 
 export function MarqueeWrapper({ children }: { children: React.ReactNode }) {
