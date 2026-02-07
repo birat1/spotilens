@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname, useRouter } from 'next/navigation';
 import {
   createContext,
   ReactNode,
@@ -26,14 +27,25 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     fetch('/me/profile')
       .then((res) => (res.ok ? res.json() : null))
-      .then((data) => setUser(data))
-      .catch(() => setUser(null))
+      .then((data) => {
+        setUser(data);
+        // If user is not authenticated and is trying to access a protected route, redirect to home
+        if (!data && pathname != '/') {
+          router.push('/');
+        }
+      })
+      .catch(() => {
+        setUser(null);
+        if (pathname != '/') router.push('/');
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [pathname, router]);
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
