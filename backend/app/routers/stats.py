@@ -20,7 +20,7 @@ def get_profile(sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)]) -> 
 @router.get("/me/top/tracks")
 def get_top_tracks(
     sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)],
-    limit: int = 10,
+    limit: int = 50,
     time_range: Literal["short_term", "medium_term", "long_term"] = "short_term",
 ) -> JSONResponse:
     """Fetch the current user's top tracks."""
@@ -33,7 +33,7 @@ def get_top_tracks(
 @router.get("/me/top/artists")
 def get_top_artists(
     sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)],
-    limit: int = 10,
+    limit: int = 50,
     time_range: Literal["short_term", "medium_term", "long_term"] = "short_term",
 ) -> JSONResponse:
     """Fetch the current user's top artists."""
@@ -44,7 +44,7 @@ def get_top_artists(
     return JSONResponse(top_artists)
 
 @router.get("/me/recently-played")
-def get_recently_played(sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)], limit: int = 10) -> JSONResponse:
+def get_recently_played(sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)], limit: int = 50) -> JSONResponse:
     """Fetch the current user's recently played tracks."""
     recently_played = sp.current_user_recently_played(limit=limit)
     if not recently_played:
