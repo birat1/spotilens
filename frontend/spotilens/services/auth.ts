@@ -1,5 +1,5 @@
 export async function login() {
   const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-  window.location.href = `${backendUrl}/api/auth/login`;
+  window.location.href = `${backendUrl}/auth/login`;
 }
