@@ -27,11 +27,11 @@ def callback(request: Request, sp_oauth: SpotifyOAuth = Depends(get_spotify_oaut
     token_info = sp_oauth.get_access_token(code)
     request.session["token_info"] = token_info
 
-    return RedirectResponse(url="/")
+    return RedirectResponse(url="https://spotilens.vercel.app")
 
 @router.get("/auth/logout")
 def logout(request: Request) -> RedirectResponse:
     """Logout endpoint to clear session."""
     request.session.clear()
 
-    return RedirectResponse(url="/")
+    return RedirectResponse(url="https://spotilens.vercel.app")
