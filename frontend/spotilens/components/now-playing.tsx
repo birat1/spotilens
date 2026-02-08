@@ -3,14 +3,18 @@ import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 
 import { MarqueeWrapper } from '@/components/utils/MarqueeWrapper';
+import { useAuth } from '@/context/auth-context';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export function NowPlaying() {
+  const { user, loading } = useAuth();
   const [playback, setPlayback] = useState<any>(null);
 
   // Fetch currently playing track
   const fetchCurrentTrack = useCallback(async () => {
+    if (!user) return;
+
     const token = localStorage.getItem('spotify_token');
     if (!token) return;
 
@@ -33,18 +37,20 @@ export function NowPlaying() {
     } catch (err) {
       console.error('Failed to fetch currently playing track:', err);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    const token = localStorage.getItem('spotify_token');
-    if (!token) return;
+    if (loading || !user) {
+      setPlayback(null);
+      return;
+    }
 
     fetchCurrentTrack();
     const interval = setInterval(fetchCurrentTrack, 5000); // Refresh every 5 seconds
     return () => clearInterval(interval);
-  }, [fetchCurrentTrack]);
+  }, [fetchCurrentTrack, loading, user]);
 
-  if (!playback || !playback.item) return null;
+  if (!user || !playback || !playback.item) return null;
 
   return (
     /* Now Playing Card */
