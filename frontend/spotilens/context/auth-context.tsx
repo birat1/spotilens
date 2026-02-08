@@ -31,10 +31,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const tokenFromUrl = params.get('access_token');
+    const accessToken = params.get('access_token');
+    const refreshToken = params.get('refresh_token');
 
-    if (tokenFromUrl) {
-      localStorage.setItem('spotify_token', tokenFromUrl);
+    if (accessToken && refreshToken) {
+      localStorage.setItem('spotify_access_token', accessToken);
+      localStorage.setItem('spotify_refresh_token', refreshToken);
       window.history.replaceState({}, document.title, window.location.pathname);
     }
 
