@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/auth-context';
+import { logout } from '@/services/auth';
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
@@ -30,11 +31,9 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center">
-          <a href="/auth/logout">
-            <Button variant="ghost" size="sm">
-              Logout
-            </Button>
-          </a>
+          <Button variant="ghost" size="sm" onClick={() => logout()}>
+            Logout
+          </Button>
         </div>
       </div>
     </header>
