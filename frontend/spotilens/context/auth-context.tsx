@@ -30,41 +30,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProfile = async (token: string) => {
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/me/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data);
-        } else if (res.status === 401) {
-          localStorage.removeItem('spotify_access_token');
-        }
-      } catch (err) {
-        console.error('Failed to fetch user profile:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get('access_token');
 
     if (tokenFromUrl) {
       localStorage.setItem('spotify_token', tokenFromUrl);
       window.history.replaceState({}, document.title, window.location.pathname);
-
-      fetchProfile(accessToken);
-    } else {
-      const existingToken = localStorage.getItem('spotify_access_token');
-      if (existingToken) {
-        fetchProfile(existingToken);
-      } else {
-        setLoading(false);
-      }
     }
+
+    const token = localStorage.getItem('spotify_token');
+
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    fetch(`${BACKEND_URL}/api/me/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setUser(data))
+      .catch(() => {
+        localStorage.removeItem('spotify_token');
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   return (
