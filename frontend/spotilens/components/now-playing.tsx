@@ -12,7 +12,7 @@ export function NowPlaying() {
   // Fetch currently playing track
   const fetchCurrentTrack = useCallback(async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/me/player/currently-playing`);
+      const res = await fetch(`${BACKEND_URL}/api/me/player/currently-playing`);
       if (res.ok) {
         const data = await res.json();
         if (data && data.item) {

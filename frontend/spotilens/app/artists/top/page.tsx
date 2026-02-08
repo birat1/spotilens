@@ -16,7 +16,7 @@ export default function TopArtists() {
 
   const { data, error, isValidating } = useSWR(
     user
-      ? `${BACKEND_URL}/me/top/artists?time_range=${timeRange}&limit=50`
+      ? `${BACKEND_URL}/api/me/top/artists?time_range=${timeRange}&limit=50`
       : null,
     fetcher,
     {

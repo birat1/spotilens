@@ -13,7 +13,7 @@ export default function RecentTracks() {
   const { user, loading: authLoading } = useAuth();
 
   const { data, error, isValidating } = useSWR(
-    user ? `${BACKEND_URL}/me/recently-played?limit=50` : null,
+    user ? `${BACKEND_URL}/api/me/recently-played?limit=50` : null,
     fetcher,
     {
       revalidateOnFocus: false, // Don't refetch on window focus

@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    fetch(`${BACKEND_URL}/me/profile`)
+    fetch(`${BACKEND_URL}/api/me/profile`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         setUser(data);
