@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.sessions import SessionMiddleware
 
 load_dotenv()
 from app.config import get_settings  # noqa: E402
@@ -10,7 +9,7 @@ from app.routers import auth, stats  # noqa: E402
 settings = get_settings()
 
 app = FastAPI()
-app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET, https_only=True, same_site="none")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,

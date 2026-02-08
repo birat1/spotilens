@@ -1,4 +1,3 @@
-import spotipy
 from fastapi import APIRouter, Request
 from fastapi.params import Depends
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -8,7 +7,6 @@ from app.config import get_settings
 from app.dependencies import get_spotify_oauth
 
 settings = get_settings()
-
 router = APIRouter()
 
 @router.get("/auth/login")
@@ -25,9 +23,10 @@ def callback(request: Request, sp_oauth: SpotifyOAuth = Depends(get_spotify_oaut
         return JSONResponse({"error": "Authorization code not found"})
 
     token_info = sp_oauth.get_access_token(code)
-    request.session["token_info"] = token_info
 
-    return RedirectResponse(url="https://spotilens.netlify.app")
+    frontend_url = f"https://spotilens.netlify.app?access_token={token_info['access_token']}"
+
+    return RedirectResponse(url=frontend_url)
 
 @router.get("/auth/logout")
 def logout(request: Request) -> RedirectResponse:

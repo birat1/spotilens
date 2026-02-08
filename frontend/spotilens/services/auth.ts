@@ -3,3 +3,8 @@ export async function login() {
 
   window.location.href = `${backendUrl}/api/auth/login`;
 }
+
+export function logout() {
+  localStorage.removeItem('spotify_token');
+  window.location.href = '/';
+}

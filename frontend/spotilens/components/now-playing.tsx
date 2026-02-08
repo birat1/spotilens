@@ -12,7 +12,16 @@ export function NowPlaying() {
   // Fetch currently playing track
   const fetchCurrentTrack = useCallback(async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/me/player/currently-playing`);
+      const token = localStorage.getItem('spotify_token');
+      if (!token) return;
+
+      const res = await fetch(
+        `${BACKEND_URL}/api/me/player/currently-playing`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       if (res.ok) {
         const data = await res.json();
         if (data && data.item) {

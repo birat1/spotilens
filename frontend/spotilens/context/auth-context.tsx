@@ -30,10 +30,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${BACKEND_URL}/api/me/profile`, { credentials: 'include' })
+    const params = new URLSearchParams(window.location.search);
+    const tokenFromUrl = params.get('token');
+
+    if (tokenFromUrl) {
+      localStorage.setItem('spotify_token', tokenFromUrl);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    const token = localStorage.getItem('spotify_token');
+
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    fetch(`${BACKEND_URL}/api/me/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => setUser(data))
-      .catch(() => setUser(null))
+      .catch(() => {
+        localStorage.removeItem('spotify_token');
+        setUser(null);
+      })
       .finally(() => setLoading(false));
   }, []);
 
