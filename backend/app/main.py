@@ -10,7 +10,7 @@ from app.routers import auth, stats  # noqa: E402
 settings = get_settings()
 
 app = FastAPI()
-app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET, https_only=True, same_site="none")
+app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET, https_only=True, same_site="lax")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
