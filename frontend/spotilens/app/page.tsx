@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 import { NowPlaying } from '@/components/now-playing';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,12 @@ import { login } from '@/services/auth';
 
 export default function Home() {
   const { user, loading } = useAuth();
+  const [hasToken, setHasToken] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('spotify_token');
+    setHasToken(!!token);
+  }, [user]);
 
   if (loading)
     return (
