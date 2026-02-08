@@ -37,7 +37,11 @@ export function NowPlaying() {
 
   useEffect(() => {
     fetchCurrentTrack();
-    const interval = setInterval(fetchCurrentTrack, 5000); // Refresh every 5 seconds
+    const interval = setInterval(() => {
+      const token = localStorage.getItem('spotify_token');
+      if (token) fetchCurrentTrack();
+    }, 5000); // Refresh every 5 seconds
+
     return () => clearInterval(interval);
   }, [fetchCurrentTrack]);
 
