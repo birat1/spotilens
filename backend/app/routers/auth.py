@@ -30,7 +30,5 @@ def callback(request: Request, sp_oauth: SpotifyOAuth = Depends(get_spotify_oaut
 
 @router.get("/auth/logout")
 def logout(request: Request) -> RedirectResponse:
-    """Logout endpoint to clear session."""
-    request.session.clear()
-
+    """Logout endpoint."""
     return RedirectResponse(url="https://spotilens.netlify.app")
