@@ -5,16 +5,23 @@ import Image from 'next/image';
 import useSWR from 'swr';
 
 import { useAuth } from '@/context/auth-context';
+import { fetcher } from '@/lib/fetcher';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function RecentTracks() {
   const { user, loading: authLoading } = useAuth();
 
+  const token =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('spotify_token')
+      : null;
+
   const { data, error, isValidating } = useSWR(
-    user ? `${BACKEND_URL}/api/me/recently-played?limit=50` : null,
-    fetcher,
+    user && token
+      ? [`${BACKEND_URL}/api/me/recently-played?limit=50`, token]
+      : null,
+    ([url]) => fetcher(url),
     {
       revalidateOnFocus: false, // Don't refetch on window focus
       dedupingInterval: 30000, // 30 seconds

@@ -6,19 +6,27 @@ import { useState } from 'react';
 import useSWR from 'swr';
 
 import { useAuth } from '@/context/auth-context';
+import { fetcher } from '@/lib/fetcher';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function TopTracks() {
   const { user, loading: authLoading } = useAuth();
   const [timeRange, setTimeRange] = useState('short_term');
 
+  const token =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('spotify_token')
+      : null;
+
   const { data, error, isValidating } = useSWR(
-    user
-      ? `${BACKEND_URL}/api/me/top/tracks?time_range=${timeRange}&limit=50`
+    user && token
+      ? [
+          `${BACKEND_URL}/api/me/top/tracks?time_range=${timeRange}&limit=50`,
+          token,
+        ]
       : null,
-    fetcher,
+    ([url]) => fetcher(url),
     {
       revalidateOnFocus: false, // Don't refetch on window focus
       dedupingInterval: 300000, // 5 minutes
