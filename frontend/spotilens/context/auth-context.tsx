@@ -50,13 +50,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const params = new URLSearchParams(window.location.search);
-    const accessToken = params.get('access_token');
-    const refreshToken = params.get('refresh_token');
+    const tokenFromUrl = params.get('access_token');
 
-    if (accessToken && refreshToken) {
-      localStorage.setItem('spotify_access_token', accessToken);
-      localStorage.setItem('spotify_refresh_token', refreshToken);
-
+    if (tokenFromUrl) {
+      localStorage.setItem('spotify_token', tokenFromUrl);
       window.history.replaceState({}, document.title, window.location.pathname);
 
       fetchProfile(accessToken);
