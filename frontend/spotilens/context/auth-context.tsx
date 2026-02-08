@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const tokenFromUrl = params.get('token');
+    const tokenFromUrl = params.get('access_token');
 
     if (tokenFromUrl) {
       localStorage.setItem('spotify_token', tokenFromUrl);
