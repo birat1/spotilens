@@ -11,10 +11,10 @@ export function NowPlaying() {
 
   // Fetch currently playing track
   const fetchCurrentTrack = useCallback(async () => {
-    try {
-      const token = localStorage.getItem('spotify_token');
-      if (!token) return;
+    const token = localStorage.getItem('spotify_token');
+    if (!token) return;
 
+    try {
       const res = await fetch(
         `${BACKEND_URL}/api/me/player/currently-playing`,
         {
@@ -36,12 +36,11 @@ export function NowPlaying() {
   }, []);
 
   useEffect(() => {
-    fetchCurrentTrack();
-    const interval = setInterval(() => {
-      const token = localStorage.getItem('spotify_token');
-      if (token) fetchCurrentTrack();
-    }, 5000); // Refresh every 5 seconds
+    const token = localStorage.getItem('spotify_token');
+    if (!token) return;
 
+    fetchCurrentTrack();
+    const interval = setInterval(fetchCurrentTrack, 5000); // Refresh every 5 seconds
     return () => clearInterval(interval);
   }, [fetchCurrentTrack]);
 
