@@ -22,7 +22,7 @@ def callback(request: Request, sp_oauth: SpotifyOAuth = Depends(get_spotify_oaut
     if not code:
         return JSONResponse({"error": "Authorization code not found"})
 
-    token_info = sp_oauth.get_access_token(code)
+    token_info = sp_oauth.get_access_token(code, check_cache=False)
 
     frontend_url = f"https://spotilens.netlify.app?access_token={token_info['access_token']}"
 

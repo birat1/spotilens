@@ -18,6 +18,7 @@ def get_spotify_oauth() -> SpotifyOAuth:
         scope=settings.SCOPE,
         open_browser=False,
         cache_handler=None,
+        show_dialog=True,
     )
 
 def get_spotify_client(auth: HTTPAuthorizationCredentials = Security(security)) -> spotipy.Spotify:  # noqa: B008
