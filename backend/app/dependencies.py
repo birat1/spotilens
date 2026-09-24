@@ -7,6 +7,7 @@ from app.config import get_settings
 
 settings = get_settings()
 
+
 def get_spotify_oauth() -> SpotifyOAuth:
     """Get SpotifyOAuth instance using settings."""
     return SpotifyOAuth(
@@ -15,6 +16,7 @@ def get_spotify_oauth() -> SpotifyOAuth:
         redirect_uri=settings.REDIRECT_URI,
         scope=settings.SCOPE,
     )
+
 
 def get_spotify_client(request: Request, sp_oauth: SpotifyOAuth = Depends(get_spotify_oauth)) -> spotipy.Spotify:  # noqa: B008
     """Retrieve a Spotify client for the authenticated user."""

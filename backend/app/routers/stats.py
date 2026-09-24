@@ -8,6 +8,7 @@ from app.dependencies import get_spotify_client
 
 router = APIRouter()
 
+
 @router.get("/me/profile")
 def get_profile(sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)]) -> JSONResponse:
     """Fetch the current user's Spotify profile."""
@@ -16,6 +17,7 @@ def get_profile(sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)]) -> 
         return JSONResponse({"error": "Could not fetch user profile"})
 
     return JSONResponse(user_data)
+
 
 @router.get("/me/top/tracks")
 def get_top_tracks(
@@ -30,6 +32,7 @@ def get_top_tracks(
 
     return JSONResponse(top_tracks)
 
+
 @router.get("/me/top/artists")
 def get_top_artists(
     sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)],
@@ -43,6 +46,7 @@ def get_top_artists(
 
     return JSONResponse(top_artists)
 
+
 @router.get("/me/recently-played")
 def get_recently_played(sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)], limit: int = 50) -> JSONResponse:
     """Fetch the current user's recently played tracks."""
@@ -51,6 +55,7 @@ def get_recently_played(sp: Annotated[spotipy.Spotify, Depends(get_spotify_clien
         return JSONResponse({"error": "Could not fetch recently played tracks"})
 
     return JSONResponse(recently_played)
+
 
 @router.get("/me/player")
 def get_current_playback(sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)]) -> JSONResponse:
@@ -61,6 +66,7 @@ def get_current_playback(sp: Annotated[spotipy.Spotify, Depends(get_spotify_clie
 
     return JSONResponse(current_playback)
 
+
 @router.get("/me/player/currently-playing")
 def get_current_track(sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)]) -> JSONResponse:
     """Fetch the current user's currently playing track."""
@@ -69,6 +75,7 @@ def get_current_track(sp: Annotated[spotipy.Spotify, Depends(get_spotify_client)
         return JSONResponse({"error": "Could not fetch currently playing track"})
 
     return JSONResponse(currently_playing)
+
 
 # Need to rework on this
 """ @router.get("/me/stats")

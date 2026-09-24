@@ -11,11 +11,13 @@ settings = get_settings()
 
 router = APIRouter()
 
+
 @router.get("/auth/login")
 def login(sp_oauth: SpotifyOAuth = Depends(get_spotify_oauth)) -> RedirectResponse:  # noqa: B008
     """Login endpoint to initiate Spotify OAuth2 flow."""
     auth_url = sp_oauth.get_authorize_url()
     return RedirectResponse(auth_url)
+
 
 @router.get("/auth/callback")
 def callback(request: Request, sp_oauth: SpotifyOAuth = Depends(get_spotify_oauth)) -> RedirectResponse:  # noqa: B008
@@ -28,6 +30,7 @@ def callback(request: Request, sp_oauth: SpotifyOAuth = Depends(get_spotify_oaut
     request.session["token_info"] = token_info
 
     return RedirectResponse(url="/")
+
 
 @router.get("/auth/logout")
 def logout(request: Request) -> RedirectResponse:

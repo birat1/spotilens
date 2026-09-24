@@ -5,11 +5,15 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/auth/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/:path*`,
       },
       {
         source: '/me/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/me/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/me/:path*`,
+      },
+      {
+        source: '/api/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/:path*`,
       },
     ];
   },

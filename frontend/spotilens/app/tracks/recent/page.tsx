@@ -35,14 +35,14 @@ export default function RecentTracks() {
 
   return (
     <div className="flex-1 overflow-y-auto min-h-0 p-8 bg-background">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <header className="mb-10 text-center sm:text-left">
-          <h1 className="text-5xl font-extrabold tracking-tighter uppercase text-foreground">
+          <h1 className="text-4xl font-extrabold tracking-tighter uppercase text-foreground">
             Recently Played Tracks
           </h1>
           <p className="text-muted-foreground text-xs">
-            Your latest listening history
+            Your listening history (last 50 tracks)
           </p>
         </header>
 
@@ -53,7 +53,7 @@ export default function RecentTracks() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-10 gap-y-10">
             {isValidating && !isLoading && (
               <div className="absolute top-4 right-8 text-[10px] text-primary animate-pulse uppercase font-bold">
                 Loading...

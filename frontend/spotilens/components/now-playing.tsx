@@ -34,9 +34,9 @@ export function NowPlaying() {
 
   return (
     /* Now Playing Card */
-    <div className="w-full max-w-2xl bg-card border rounded-xl p-6 shadow-sm">
-      <h2 className="text-sm font-medium mb-4 text-green-500 animate-pulse uppercase tracking-wider">
-        Currently Playing
+    <div className="w-full max-w-lg bg-card border rounded-xl p-6 shadow-sm">
+      <h2 className="text-sm font-semibold mb-2 text-green-600 animate-pulse tracking-tight">
+        listening to
       </h2>
 
       {/* Track Info */}

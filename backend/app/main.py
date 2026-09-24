@@ -22,6 +22,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api")
 app.include_router(stats.router, prefix="/api")
 
+
 @app.get("/")
 def read_root() -> dict:
     """Root endpoint prompting for authentication."""
