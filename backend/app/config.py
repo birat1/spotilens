@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     SESSION_SECRET: str
     ALLOWED_ORIGINS: list[str]
 
-    model_config = SettingsConfigDict(env_file="../.env")
+    model_config = SettingsConfigDict(env_file="../../.env")
 
 
 @lru_cache

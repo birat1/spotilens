@@ -66,6 +66,11 @@ export default function RecentTracks() {
                 hour: '2-digit',
                 minute: '2-digit',
               });
+              const albumImage = track.album_art_url;
+              const trackUrl = track.id
+                ? `https://open.spotify.com/track/${track.id}`
+                : null;
+              const artistNames = track.artist_name?.split(', ') ?? [];
 
               return (
                 <div
@@ -74,51 +79,59 @@ export default function RecentTracks() {
                 >
                   {/* Album Image */}
                   <div className="relative aspect-square w-full mb-3">
-                    <a
-                      href={track.album.external_urls.spotify}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute inset-0 rounded-md overflow-hidden shadow-sm hover:shadow-md transition-all"
-                    >
-                      {track.album?.images?.[0]?.url && (
+                    {trackUrl ? (
+                      <a
+                        href={trackUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="absolute inset-0 rounded-md overflow-hidden shadow-sm hover:shadow-md transition-all"
+                      >
+                        {albumImage && (
+                          <Image
+                            src={albumImage}
+                            alt={track.name}
+                            fill
+                            unoptimized
+                            className="object-cover hover:scale-105 hover:opacity-80 transition-all duration-500 cursor-pointer"
+                          />
+                        )}
+                      </a>
+                    ) : (
+                      <div className="absolute inset-0 rounded-md overflow-hidden shadow-sm">
+                        {albumImage && (
                         <Image
-                          src={track.album.images[0].url}
+                          src={albumImage}
                           alt={track.name}
                           fill
                           unoptimized
-                          className="object-cover hover:scale-105 hover:opacity-80 transition-all duration-500 cursor-pointer"
+                          className="object-cover"
                         />
-                      )}
-                    </a>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Track Info */}
                   <div className="flex flex-col min-w-0 space-y-1 text-center">
                     {/* Track Name */}
-                    <a
-                      href={track.external_urls.spotify}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-bold text-sm text-foreground truncate hover:text-primary transition-colors block"
-                    >
-                      {track.name}
-                    </a>
+                    {trackUrl ? (
+                      <a
+                        href={trackUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-sm text-foreground truncate hover:text-primary transition-colors block"
+                      >
+                        {track.name}
+                      </a>
+                    ) : (
+                      <span className="font-bold text-sm text-foreground truncate block">
+                        {track.name}
+                      </span>
+                    )}
 
                     {/* Track Artist(s) */}
                     <div className="text-xs font-medium text-muted-foreground truncate">
-                      {track.artists?.map((artist: any, index: number) => (
-                        <span key={artist.id}>
-                          <a
-                            href={artist.external_urls.spotify}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-primary transition-colors"
-                          >
-                            {artist.name}
-                          </a>
-                          {index < track.artists.length - 1 && ','}
-                        </span>
-                      ))}
+                      {artistNames.join(', ')}
                     </div>
 
                     {/* Played At */}

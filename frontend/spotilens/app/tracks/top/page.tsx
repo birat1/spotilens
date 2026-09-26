@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import useSWR from 'swr';
 
+import { RankChange } from '@/components/rank-change';
 import { useAuth } from '@/context/auth-context';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -84,8 +85,12 @@ export default function TopTracks() {
                 className="flex items-center gap-6 bg-card border border-border p-4 rounded-xl shadow-sm hover:shadow-md transition-all group"
               >
                 {/* Rank */}
-                <div className="text-2xl font-black text-muted-foreground/30 min-w-[3rem] text-center">
-                  {index + 1}
+                <div className="flex w-10 min-w-10 shrink-0 flex-col items-center gap-1">
+                  <div className="text-2xl font-black text-muted-foreground/30">
+                    {index + 1}
+                  </div>
+
+                  <RankChange change={track.rank_change} />
                 </div>
 
                 {/* Album Image */}
