@@ -119,7 +119,7 @@ export default function TopArtists() {
                   </a>
 
                   {/* Artist Genre */}
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest truncate">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-tight truncate">
                     {artist.genres?.[0]}
                   </p>
                 </div>
