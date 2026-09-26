@@ -98,8 +98,21 @@ async def get_recently_played(
     user_id = user_data["id"]
 
     # Fetch last 50 recently played tracks from Spotify to sync with the database
-    recently_played = sp.current_user_recently_played(limit=50)
-    if recently_played and "items" in recently_played:
+    recently_played = sp.current_user_recently_played(limit=min(limit, 50))
+    recently_played_items = recently_played.get("items", []) if recently_played else []
+
+    # If the user requested more than 50 items, fetch additional pages of recently played tracks
+    if limit > 50 and len(recently_played_items) == 50:
+        oldest_played_at = recently_played_items[-1].get("played_at")
+        if oldest_played_at:
+            next_page = sp.current_user_recently_played(
+                limit=50,
+                before=int(datetime.fromisoformat(oldest_played_at.replace("Z", "+00:00")).timestamp() * 1000),
+            )
+            if next_page and "items" in next_page:
+                recently_played_items.extend(next_page["items"])
+
+    if recently_played_items:
         for item in recently_played["items"]:
             track_data = item.get("track")
             played_at_str = item.get("played_at")

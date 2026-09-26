@@ -12,7 +12,7 @@ export default function RecentTracks() {
   const { user, loading: authLoading } = useAuth();
 
   const { data, error, isValidating } = useSWR(
-    user ? `/me/recently-played?limit=50` : null,
+    user ? `/me/recently-played?limit=100` : null,
     fetcher,
     {
       revalidateOnFocus: false, // Don't refetch on window focus
@@ -42,7 +42,7 @@ export default function RecentTracks() {
             Recently Played Tracks
           </h1>
           <p className="text-muted-foreground text-xs">
-            Your listening history (last 50 tracks)
+            Your listening history (last 100 tracks)
           </p>
         </header>
 
@@ -62,10 +62,14 @@ export default function RecentTracks() {
 
             {tracks.map((item: any) => {
               const { track } = item;
-              const playedAt = new Date(item.played_at).toLocaleTimeString([], {
+              const playedAt = new Date(item.played_at).toLocaleString([], {
                 hour: '2-digit',
                 minute: '2-digit',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
               });
+              
               const albumImage = track.album_art_url;
               const trackUrl = track.id
                 ? `https://open.spotify.com/track/${track.id}`
@@ -135,7 +139,7 @@ export default function RecentTracks() {
                     </div>
 
                     {/* Played At */}
-                    <span className="text-[10px] font-bold uppercase text-muted-foreground/60 tracking-wider">
+                    <span className="text-[9px] font-semibold uppercase text-muted-foreground/60 tracking-tight">
                       {playedAt}
                     </span>
                   </div>
